@@ -178,4 +178,4 @@ npx allure generate allure-results --clean && npx allure open
 
 ## License
 
-This project is licensed under the [NOKIBUL ARFIN SIAM](LICENSE).
+This project is licensed under the [NOKIBUL ARFIN SIAM](https://github.com/nokibularfinsiam).
