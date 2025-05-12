@@ -33,7 +33,7 @@ npm init wdio@latest .
 The WebdriverIO configuration was initially scaffolded using the built-in CLI wizard. Example wizard responses:
 
 ```
-✔ A project named "web_io" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
+✔ A project named "sauce-demo-wdio-tests" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
 ✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
 ✔ Where is your automation backend located? On my local machine
 ✔ Which environment you would like to automate? Web - web applications in the browser
@@ -41,12 +41,12 @@ The WebdriverIO configuration was initially scaffolded using the built-in CLI wi
 ✔ Which framework do you want to use? Mocha (https://mochajs.org/)
 ✔ Do you want to use Typescript to write tests? no
 ✔ Do you want WebdriverIO to autogenerate some test files? yes
-✔ What should be the location of your spec files? test/specs/**/*.js
+✔ What should be the location of your spec files? D:\Siam\SQA\sauce-demo-wdio-tests\test\specs\**\*.js
 ✔ Do you want to use page objects (https://martinfowler.com/bliki/PageObject.html)?
-✔ Where are your page objects located? test/pageobjects/**/*.js
+✔ Where are your page objects located? D:\Siam\SQA\sauce-demo-wdio-tests\test\pageobjects\**\*.js
 ✔ Which reporter do you want to use? allure
 ✔ Do you want to add a plugin to your test setup?
-✔ Would you like to include Visual Testing to your setup? yes
+✔ Would you like to include Visual Testing to your setup? For more information see https://webdriver.io/docs/visual-testing! yes
 ✔ Do you want to add a service to your test setup? 
 ✔ Do you want me to run `npm install`? yes
 ```
