@@ -46,6 +46,9 @@ npm init wdio@latest .
 ✔ Do you want me to run `npm install`? yes
 ```
 
+````
+npm install
+````
 The key settings in `wdio.conf.js` include:
 
 * **Runner**: Local
@@ -56,9 +59,6 @@ The key settings in `wdio.conf.js` include:
 
 You can adjust these settings to suit your environment.
 
-````
-npm install
-````
 ### Install Allure Reporter
 
 ```bash
