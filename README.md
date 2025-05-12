@@ -27,9 +27,6 @@ git clone https://github.com/nokibularfinsiam/sauce-demo-wdio-tests.git
 ````
 npm init wdio@latest .
 ````
-
-## WebdriverIO Configuration
-
 ```
 ✔ A project named "sauce-demo-wdio-tests" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
 ✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
