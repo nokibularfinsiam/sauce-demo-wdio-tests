@@ -33,7 +33,7 @@ npm init wdio@latest .
 The WebdriverIO configuration was initially scaffolded using the built-in CLI wizard. Example wizard responses:
 
 ```
-✔ A project named "web_io" was detected at "D:\Siam\SQA\web_io", correct? yes
+✔ A project named "web_io" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
 ✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
 ✔ Where is your automation backend located? On my local machine
 ✔ Which environment you would like to automate? Web - web applications in the browser
