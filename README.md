@@ -30,8 +30,6 @@ npm init wdio@latest .
 
 ## WebdriverIO Configuration
 
-The WebdriverIO configuration was initially scaffolded using the built-in CLI wizard. Example wizard responses:
-
 ```
 ✔ A project named "sauce-demo-wdio-tests" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
 ✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
