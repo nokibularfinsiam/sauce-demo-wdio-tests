@@ -4,18 +4,6 @@ This repository contains a WebdriverIO + Mocha test suite for [SauceDemo](https:
 
 ---
 
-## Table of Contents
-
-1. [Prerequisites](#prerequisites)
-2. [Installation](#installation)
-3. [Project Structure](#project-structure)
-4. [Execution Process](#execution-process)
-5. [Page Objects & Test Specs](#page-objects--test-specs)
-6. [Skills & Technologies Used](#skills--technologies-used)
-7. [License](#license)
-
----
-
 ## Prerequisites
 
 - **Node.js** (v14 or higher) and **npm**  
@@ -31,8 +19,8 @@ This repository contains a WebdriverIO + Mocha test suite for [SauceDemo](https:
 
 1. **Clone this repository**  
    ```bash
-   git clone https://github.com/<your-username>/web_io.git
-   cd web_io
+   git clone https://github.com/nokibularfinsiam/sauce-demo-wdio-tests.git
+   cd sauce-demo-wdio-tests
    ```
 2. **Install dependencies**  
    ```bash
@@ -46,7 +34,9 @@ This installs all required WebdriverIO packages, ChromeDriver, and Allure.
 ## Project Structure
 
 ```
-web_io/
+sauce-demo-wdio-tests/
+├── allure-report
+├── allure-results
 ├── test/
 │   ├── pageobjects/
 │   │   ├── login.page.js
@@ -55,8 +45,8 @@ web_io/
 │   │   └── checkout.page.js
 │   └── specs/
 │       ├── lockedOutUser.spec.js
-│       ├── standardUserFlow.spec.js
-│       └── performanceUserFlow.spec.js
+│       ├── standardUser.spec.js
+│       └── performanceUser.spec.js
 ├── .gitignore
 ├── package.json
 ├── wdio.conf.js
@@ -67,6 +57,54 @@ web_io/
 - **`test/specs/`**: Contains test scripts for each user scenario.  
 - **`wdio.conf.js`**: WebdriverIO configuration (sequential execution and Allure setup).  
 - **`package.json`**: Dependencies and scripts.
+
+---
+
+**`package.json`**
+
+```js
+"type": "commonjs" // change type
+
+```
+
+---
+
+## WebdriverIO Configuration
+**`wdio.conf.js`**
+
+```js
+exports.config = {
+    runner: 'local',
+    specs: [
+        './test/specs/**/*.js'
+    ],
+    maxInstances: 1,   // ensure everything runs sequentially
+    capabilities: [{
+        browserName: 'chrome'
+    }],
+    logLevel: 'info',
+    bail: 0,
+    baseUrl: 'https://www.saucedemo.com',
+    waitforTimeout: 10000,
+    connectionRetryTimeout: 120000,
+    connectionRetryCount: 3,
+    services: ['chromedriver'],
+    framework: 'mocha',
+    reporters: [
+        'spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: false
+        }]
+    ],
+    mochaOpts: {
+        ui: 'bdd',
+        timeout: 60000
+    }
+}
+
+```
 
 ---
 
@@ -84,11 +122,11 @@ web_io/
    ```
    or:  
    ```bash
-   npm test -- --spec ./test/specs/standardUserFlow.spec.js
+   npm test -- --spec ./test/specs/standardUser.spec.js
    ```
 4. **Generate and view Allure report**:  
    ```bash
-   npm run allure:report
+   npm run allureReport
    ```
 
 ---
@@ -103,8 +141,8 @@ web_io/
 
 - **Test Specs** (in `test/specs/`):  
   - `lockedOutUser.spec.js` – verifies error message for a locked out user.  
-  - `standardUserFlow.spec.js` – logs in, resets state, adds three items, verifies checkout, and logs out.  
-  - `performanceUserFlow.spec.js` – logs in, resets state, sorts (Z→A), adds an item, verifies checkout, and logs out.
+  - `standardUser.spec.js` – logs in, resets state, adds three items, verifies checkout, and logs out.  
+  - `performanceUser.spec.js` – logs in, resets state, sorts (Z→A), adds an item, verifies checkout, and logs out.
 
 ---
 
@@ -120,4 +158,4 @@ web_io/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the nokibularfinsiam.
