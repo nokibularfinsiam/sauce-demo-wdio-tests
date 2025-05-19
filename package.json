@@ -1,6 +1,6 @@
 {
   "name": "sauce-demo-wdio-tests",
-  "type": "module",
+  "type": "commonjs",
   "devDependencies": {
     "@wdio/allure-reporter": "^8.43.0",
     "@wdio/cli": "^9.13.0",

@@ -1,41 +1,29 @@
-import { $ } from '@wdio/globals'
-import Page from './page.js';
+// test/pageobjects/login.page.js
+class LoginPage {
+    // Locators
+    get usernameInput() { return $('#user-name'); }
+    get passwordInput() { return $('#password'); }
+    get loginButton()   { return $('#login-button'); }
+    get errorMessage()  { return $('h3[data-test="error"]'); }
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-class LoginPage extends Page {
-    /**
-     * define selectors using getter methods
-     */
-    get inputUsername () {
-        return $('#username');
+    // Navigate to the root URL
+    async open() {
+        await browser.url('/');
+        // wait for the username field to be visible
+        await this.usernameInput.waitForDisplayed({ timeout: 5000 });
     }
 
-    get inputPassword () {
-        return $('#password');
-    }
+    // Perform login action
+    async login(username, password) {
+        await this.usernameInput.waitForDisplayed({ timeout: 5000 });
+        await this.usernameInput.setValue(username);
 
-    get btnSubmit () {
-        return $('button[type="submit"]');
-    }
+        await this.passwordInput.waitForDisplayed({ timeout: 5000 });
+        await this.passwordInput.setValue(password);
 
-    /**
-     * a method to encapsule automation code to interact with the page
-     * e.g. to login using username and password
-     */
-    async login (username, password) {
-        await this.inputUsername.setValue(username);
-        await this.inputPassword.setValue(password);
-        await this.btnSubmit.click();
-    }
-
-    /**
-     * overwrite specific options to adapt it to page object
-     */
-    open () {
-        return super.open('login');
+        await this.loginButton.waitForClickable({ timeout: 5000 });
+        await this.loginButton.click();
     }
 }
 
-export default new LoginPage();
+module.exports = new LoginPage();

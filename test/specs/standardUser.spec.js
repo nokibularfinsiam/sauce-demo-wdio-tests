@@ -1,67 +1,51 @@
+const LoginPage      = require('../pageobjects/login.page');
+const InventoryPage  = require('../pageobjects/inventory.page');
+const CartPage       = require('../pageobjects/cart.page');
+const CheckoutPage   = require('../pageobjects/checkout.page');
+
 describe('Shopping Flow - Standard User', () => {
     it('should complete an order with 3 items', async () => {
-        //Open the site and log in
-        await browser.url('/');
-        await $('#user-name').setValue('standard_user');
-        await $('#password').setValue('secret_sauce');
-        await $('#login-button').click();
+        // 1. login
+        await LoginPage.open();
+        await LoginPage.login('standard_user', 'secret_sauce');
 
-        //Reset App State via the hamburger menu
-        const menuBtn   = $('#react-burger-menu-btn');
-        const resetLink = $('#reset_sidebar_link');
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        await resetLink.waitForClickable();
-        await resetLink.click();
-        const closeBtn = $('#react-burger-cross-btn');
-        await closeBtn.waitForClickable();
-        await closeBtn.click();
+        // 2. reset app state
+        await InventoryPage.resetAppState();
 
-        //Add any three items to the cart
-        await $('#add-to-cart-sauce-labs-backpack').click();
-        await $('#add-to-cart-sauce-labs-bike-light').click();
-        await $('#add-to-cart-sauce-labs-bolt-t-shirt').click();
+        // 3. add 3 items to cart
+        await InventoryPage.addItemToCart('sauce-labs-backpack');
+        await InventoryPage.addItemToCart('sauce-labs-bike-light');
+        await InventoryPage.addItemToCart('sauce-labs-bolt-t-shirt');
 
-        // Go to cart and checkout
-        await $('.shopping_cart_link').click();
-        await $('#checkout').click();
+        // 4. go to cart and checkout
+        await CartPage.openCart();
+        await CartPage.goToCheckout();
 
-        // Fill in checkout information
-        await $('#first-name').setValue('John');
-        await $('#last-name').setValue('Doe');
-        await $('#postal-code').setValue('12345');
-        await $('#continue').click();
+        // 5. fill checkout info
+        await CheckoutPage.submitInfo('John', 'Doe', '12345');
 
-        //Verify the three product
-        const itemNames = await $$('.inventory_item_name');
-        await expect(itemNames[0]).toHaveText('Sauce Labs Backpack');
-        await expect(itemNames[1]).toHaveText('Sauce Labs Bike Light');
-        await expect(itemNames[2]).toHaveText('Sauce Labs Bolt T-Shirt');
+        // 6. verify items on overview page
+        const names = await CheckoutPage.overviewItems;
+        await expect(names[0]).toHaveText('Sauce Labs Backpack');
+        await expect(names[1]).toHaveText('Sauce Labs Bike Light');
+        await expect(names[2]).toHaveText('Sauce Labs Bolt T-Shirt');
 
-        const itemTotal = parseFloat(
-            (await $('.summary_subtotal_label').getText()).replace('Item total: $', '')
+        // 7. verify totals
+        const itemTotal   = parseFloat(
+            (await CheckoutPage.itemTotalLabel.getText()).replace('Item total: $', '')
         );
-        const tax = parseFloat(
-            (await $('.summary_tax_label').getText()).replace('Tax: $', '')
+        const taxAmount   = parseFloat(
+            (await CheckoutPage.taxLabel.getText()).replace('Tax: $', '')
         );
-        const expectedTotal = (itemTotal + tax).toFixed(2);
-        await expect($('.summary_total_label')).toHaveText(`Total: $${expectedTotal}`);
+        const expectedSum = (itemTotal + taxAmount).toFixed(2);
+        await expect(CheckoutPage.totalLabel).toHaveText(`Total: $${expectedSum}`);
 
-        //Finish the purchase and verify success message
-        await $('#finish').click();
-        await expect($('.complete-header')).toHaveText('Thank you for your order!');
+        // 8. finish and verify
+        await CheckoutPage.finish();
+        await expect(CheckoutPage.completeHeader).toHaveText('Thank you for your order!');
 
-        //Reset App State then logout
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        await resetLink.waitForClickable();
-        await resetLink.click();
-        await closeBtn.waitForClickable();
-        await closeBtn.click();
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        const logoutLink = $('#logout_sidebar_link');
-        await logoutLink.waitForClickable();
-        await logoutLink.click();
+        // 9. reset state and logout
+        await InventoryPage.resetAppState();
+        await InventoryPage.logout();
     });
 });

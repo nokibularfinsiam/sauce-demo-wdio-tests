@@ -1,72 +1,53 @@
+// test/specs/performanceUserFlow.spec.js
+const LoginPage      = require('../pageobjects/login.page');
+const InventoryPage  = require('../pageobjects/inventory.page');
+const CartPage       = require('../pageobjects/cart.page');
+const CheckoutPage   = require('../pageobjects/checkout.page');
+
 describe('Shopping Flow - Performance Glitch User', () => {
-    it('should complete an order after sorting and adding first item', async () => {
-        //Open the site and log in
-        await browser.url('/');
-        await $('#user-name').setValue('performance_glitch_user');
-        await $('#password').setValue('secret_sauce');
-        await $('#login-button').click();
+    it('should complete an order after sorting (Z→A) and adding the first item', async () => {
+        // 1. login
+        await LoginPage.open();
+        await LoginPage.login('performance_glitch_user', 'secret_sauce');
 
-        // 2. Reset App State
-        const menuBtn   = $('#react-burger-menu-btn');
-        const resetLink = $('#reset_sidebar_link');
-        const closeBtn  = $('#react-burger-cross-btn');
+        // 2. reset app state
+        await InventoryPage.resetAppState();
 
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        await resetLink.waitForClickable();
-        await resetLink.click();
-        await closeBtn.waitForClickable();
-        await closeBtn.click();
+        // 3. sort products by Name (Z to A)
+        await InventoryPage.sortBy('Name (Z to A)');
 
-        //Sort products by Name (Z to A)
-        await $('select.product_sort_container').waitForEnabled();
-        await $('select.product_sort_container').selectByVisibleText('Name (Z to A)');
+        // 4. add the first (Z→A) product to cart
+        const firstInventory = (await InventoryPage.inventoryItems)[0];
+        await firstInventory.scrollIntoView();
+        await firstInventory.$('button.btn_inventory').waitForClickable();
+        await firstInventory.$('button.btn_inventory').click();
 
-        //Add the first product to the cart
-        const firstItem = (await $$('.inventory_item'))[0];
-        await firstItem.scrollIntoView();
-        await firstItem.$('button.btn_inventory').waitForClickable();
-        await firstItem.$('button.btn_inventory').click();
+        // 5. go to cart & checkout
+        await CartPage.openCart();
+        await CartPage.goToCheckout();
 
-        //Go to cart and checkout
-        await $('.shopping_cart_link').waitForClickable();
-        await $('.shopping_cart_link').click();
-        await $('#checkout').waitForClickable();
-        await $('#checkout').click();
-        await $('#first-name').setValue('Alice');
-        await $('#last-name').setValue('Smith');
-        await $('#postal-code').setValue('54321');
-        await $('#continue').click();
+        // 6. fill checkout info
+        await CheckoutPage.submitInfo('Alice', 'Smith', '54321');
 
-        // Verify product
-        const cartItems = await $$('.inventory_item_name');
-        await expect(cartItems[0]).toHaveText('Test.allTheThings() T-Shirt (Red)');
+        // 7. verify overview item name and totals
+        const overNames = await CheckoutPage.overviewItems;
+        await expect(overNames[0]).toHaveText('Test.allTheThings() T-Shirt (Red)');
 
-        const itemTotal = parseFloat(
-            (await $('.summary_subtotal_label').getText()).replace('Item total: $', '')
+        const itemTotal   = parseFloat(
+            (await CheckoutPage.itemTotalLabel.getText()).replace('Item total: $', '')
         );
-        const tax = parseFloat(
-            (await $('.summary_tax_label').getText()).replace('Tax: $', '')
+        const taxAmount   = parseFloat(
+            (await CheckoutPage.taxLabel.getText()).replace('Tax: $', '')
         );
-        const expectedTotal = (itemTotal + tax).toFixed(2);
-        await expect($('.summary_total_label')).toHaveText(`Total: $${expectedTotal}`);
+        const expectedSum = (itemTotal + taxAmount).toFixed(2);
+        await expect(CheckoutPage.totalLabel).toHaveText(`Total: $${expectedSum}`);
 
-        //Finish checkout and verify success
-        await $('#finish').waitForClickable();
-        await $('#finish').click();
-        await expect($('.complete-header')).toHaveText('Thank you for your order!');
+        // 8. finish and verify
+        await CheckoutPage.finish();
+        await expect(CheckoutPage.completeHeader).toHaveText('Thank you for your order!');
 
-        // 10. Reset App State again then logout
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        await resetLink.waitForClickable();
-        await resetLink.click();
-        await closeBtn.waitForClickable();
-        await closeBtn.click();
-        await menuBtn.waitForClickable();
-        await menuBtn.click();
-        const logoutLink = $('#logout_sidebar_link');
-        await logoutLink.waitForClickable();
-        await logoutLink.click();
+        // 9. reset state and logout
+        await InventoryPage.resetAppState();
+        await InventoryPage.logout();
     });
 });
