@@ -1,108 +1,58 @@
-# SauceDemo WebdriverIO Test Suite
+# SauceDemo WebdriverIO E2E Suite
 
-This repository contains an automated test suite for [SauceDemo](https://www.saucedemo.com/) built with **WebdriverIO**, **Mocha**, and **Allure Reporter**. You can run tests individually or all together, and generate detailed Allure reports after each execution.
+This repository contains a WebdriverIO + Mocha test suite for [SauceDemo](https://www.saucedemo.com/). It uses a **Page Object Model** structure, runs tests sequentially, and generates an **Allure** report.
+
+---
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Installation](#installation)
+3. [Project Structure](#project-structure)
+4. [Execution Process](#execution-process)
+5. [Page Objects & Test Specs](#page-objects--test-specs)
+6. [Skills & Technologies Used](#skills--technologies-used)
+7. [License](#license)
 
 ---
 
 ## Prerequisites
 
-Before you begin, ensure you have installed:
+- **Node.js** (v14 or higher) and **npm**  
+- **Git**  
+- **Allure Commandline** (for report generation)  
 
-* **Node.js** (v14 or higher)
-* **npm** (comes with Node.js)
-* **Git** (for cloning the repository)
-* **Allure Commandline** (for report generation)
+> Install Allure CLI locally:  
+> `npm install --save-dev allure-commandline`
 
 ---
 
-## Clone GitHub
+## Installation
 
-**Clone the repository**
+1. **Clone this repository**  
+   ```bash
+   git clone https://github.com/<your-username>/web_io.git
+   cd web_io
+   ```
+2. **Install dependencies**  
+   ```bash
+   npm install
+   ```
 
-```bash
-git clone https://github.com/nokibularfinsiam/sauce-demo-wdio-tests.git
-```
+This installs all required WebdriverIO packages, ChromeDriver, and Allure.
 
-## Install WebdriverIO
-````
-npm init wdio@latest .
-````
-```
-✔ A project named "sauce-demo-wdio-tests" was detected at "D:\Siam\SQA\sauce-demo-wdio-tests", correct? yes
-✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
-✔ Where is your automation backend located? On my local machine
-✔ Which environment you would like to automate? Web - web applications in the browser
-✔ With which browser should we start? Chrome
-✔ Which framework do you want to use? Mocha (https://mochajs.org/)
-✔ Do you want to use Typescript to write tests? no
-✔ Do you want WebdriverIO to autogenerate some test files? yes
-✔ What should be the location of your spec files? D:\Siam\SQA\sauce-demo-wdio-tests\test\specs\**\*.js
-✔ Do you want to use page objects (https://martinfowler.com/bliki/PageObject.html)?
-✔ Where are your page objects located? D:\Siam\SQA\sauce-demo-wdio-tests\test\pageobjects\**\*.js
-✔ Which reporter do you want to use? allure
-✔ Do you want to add a plugin to your test setup?
-✔ Would you like to include Visual Testing to your setup? For more information see https://webdriver.io/docs/visual-testing! yes
-✔ Do you want to add a service to your test setup? 
-✔ Do you want me to run `npm install`? yes
-```
-
-````
-npm install
-````
-The key settings in `wdio.conf.js` include:
-
-* **Runner**: Local
-* **Framework**: Mocha
-* **Services**: ChromeDriver
-* **Reporters**: `allure`
-* **Timeouts**: 10s for commands; 60s for Mocha tests
-
-You can adjust these settings to suit your environment.
-
-### Install Allure Reporter
-
-```bash
-npm install @wdio/allure-reporter --save-dev
-```
-
-### Add into package.json
-
-```bash
-  "scripts": {
-    "wdio": "wdio run ./wdio.conf.js",
-    "test": "wdio run wdio.conf.js",
-    "allureReport": "allure generate allure-results --clean && allure open"
-  }
-```
-
-## WebdriverIO Configuration
-
-The key settings in `wdio.conf.js` include:
-```bash
- baseUrl: 'https://www.saucedemo.com/',
-```
-
-## Adding Allure Reporting
-
-The WebdriverIO Allure reporter is configured in `wdio.conf.js`:
-```js
-     reporters: [
-        'spec',
-        ['allure', {
-        outputDir: 'allure-results',
-        disableWebdriverStepsReporting: true,
-        disableWebdriverScreenshotsReporting: false
-        }]
-    ],
-```
-* **`outputDir`**: Directory where test results are stored.
-* **`disableWebdriverStepsReporting`**: Hides WebdriverIO internal steps to focus on test logic.
-* **`disableWebdriverScreenshotsReporting`**: Enables screenshots on failure.
+---
 
 ## Project Structure
 
 ```
+web_io/
 ├── test/
+│   ├── pageobjects/
+│   │   ├── login.page.js
+│   │   ├── inventory.page.js
+│   │   ├── cart.page.js
+│   │   └── checkout.page.js
 │   └── specs/
 │       ├── lockedOutUser.spec.js
 │       ├── standardUserFlow.spec.js
@@ -113,64 +63,61 @@ The WebdriverIO Allure reporter is configured in `wdio.conf.js`:
 └── README.md
 ```
 
-* **`test/specs/`**: Contains the three test scripts for each scenario.
-* **`wdio.conf.js`**: WebdriverIO configuration file, enabling ChromeDriver and Allure.
-* **`package.json`**: Lists dependencies and NPM scripts.
-* **`.gitignore`**: Excludes `node_modules/` and `allure-results/`.
+- **`test/pageobjects/`**: Contains POM classes for each page.  
+- **`test/specs/`**: Contains test scripts for each user scenario.  
+- **`wdio.conf.js`**: WebdriverIO configuration (sequential execution and Allure setup).  
+- **`package.json`**: Dependencies and scripts.
 
 ---
 
-## Running Tests
+## Execution Process
 
-### Run All Tests
-
-To execute **all** specs in sequence:
-
-```bash
-npm test
-```
-
-This runs:
-
-```bash
-wdio run wdio.conf.js
-```
-
-### Run a Single Spec
-
-To run a specific test file, use the `--spec` flag:
-
-```bash
-npx wdio run wdio.conf.js --spec ./test/specs/lockedOutUser.spec.js
-```
-
-Or via npm:
-
-```bash
-npm test -- --spec ./test/specs/standardUser.spec.js
-```
+1. **Install dependencies** (see [Installation](#installation)).  
+2. **Run all tests** (sequentially):  
+   ```bash
+   npm test
+   ```
+   - Equivalent to: `npx wdio run wdio.conf.js`  
+3. **Run a single spec** (optional):  
+   ```bash
+   npx wdio run wdio.conf.js --spec ./test/specs/lockedOutUser.spec.js
+   ```
+   or:  
+   ```bash
+   npm test -- --spec ./test/specs/standardUserFlow.spec.js
+   ```
+4. **Generate and view Allure report**:  
+   ```bash
+   npm run allure:report
+   ```
 
 ---
 
-## Generating and Viewing Allure Reports
+## Page Objects & Test Specs
 
-After test execution, generate and view the Allure report:
+- **Page Objects** (in `test/pageobjects/`):  
+  - `login.page.js` – handles login actions and selectors.  
+  - `inventory.page.js` – methods for resetting state, adding items, sorting, and logging out.  
+  - `cart.page.js` – manages cart navigation and checkout transition.  
+  - `checkout.page.js` – fills checkout details and verifies totals.
 
-```bash
-npm run allureReport
-```
+- **Test Specs** (in `test/specs/`):  
+  - `lockedOutUser.spec.js` – verifies error message for a locked out user.  
+  - `standardUserFlow.spec.js` – logs in, resets state, adds three items, verifies checkout, and logs out.  
+  - `performanceUserFlow.spec.js` – logs in, resets state, sorts (Z→A), adds an item, verifies checkout, and logs out.
 
-This script runs:
+---
 
-```bash
-npx allure generate allure-results --clean && npx allure open
-```
+## Skills & Technologies Used
 
-* **`--clean`**: Removes old results before generating a fresh report.
-* **`allure open`**: Launches a local web server to view the report.
+- **Testing Tools:** WebdriverIO, Mocha, Allure Reporter, ChromeDriver Service  
+- **Design Pattern:** Page Object Model (POM)  
+- **Languages:** JavaScript (ES6+), Node.js  
+- **CI & Reporting:** npm scripts, npx, Allure CLI  
+- **Version Control:** Git, GitHub  
 
 ---
 
 ## License
 
-This project is licensed under the [NOKIBUL ARFIN SIAM](https://github.com/nokibularfinsiam).
+This project is licensed under the MIT License.
