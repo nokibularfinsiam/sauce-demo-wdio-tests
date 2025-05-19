@@ -1,4 +1,4 @@
-# SauceDemo WebdriverIO E2E Suite
+# SauceDemo WebdriverIO test Suite
 
 This repository contains a WebdriverIO + Mocha test suite for [SauceDemo](https://www.saucedemo.com/). It uses a **Page Object Model** structure, runs tests sequentially, and generates an **Allure** report.
 
